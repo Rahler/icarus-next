@@ -1,9 +1,10 @@
 import type { ReactNode } from "react";
 import { StoreProvider } from "./StoreProvider";
 import type { Metadata } from "next";
-import { Nav } from "@/components/Nav/Nav";
 
 import { Roboto_Mono } from "next/font/google";
+import { TopNav } from "@/components/Nav/TopNav";
+import "./custom.scss";
 
 const robotoMono = Roboto_Mono({
   subsets: ["latin"],
@@ -24,7 +25,7 @@ export default function RootLayout({ children }: Props) {
     <StoreProvider>
       <html lang="en" className={robotoMono.className}>
         <body>
-          <Nav />
+          <TopNav />
           <main>{children}</main>
         </body>
       </html>

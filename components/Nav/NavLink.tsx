@@ -1,8 +1,8 @@
 "use client";
 
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ScriptProps } from "next/script";
+import { Nav } from "react-bootstrap";
 
 interface Props extends ScriptProps {
   url: string;
@@ -16,7 +16,7 @@ export const NavLink = ({ url, activeClass }: Props) => {
 
   return (
     <nav {...{ className }}>
-      <Link {...{ href }}>{url}</Link>
+      <Nav.Link {...{ href }}>{url}</Nav.Link>
     </nav>
   );
 };
