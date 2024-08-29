@@ -1,0 +1,31 @@
+/* 
+Site Button Text Rollover.off		#757B6D
+Site Button Text Rollover.on		#676765
+Site Button Rollover Gradient		#535749
+Site Highlighting Color			#727463
+
+
+Talent Linking Line Highlighted  	#b39645
+Talent Linking Line not highlighted	#323136
+Talent Button Rollover Gradient		#4F4827
+Talent Frame Color  			#b39645
+Talent Text Rollover.off  		#DABB35
+Talent Text Rollover.on  		#E0D5A8
+ */
+
+// Make sure to test colors for contrast.
+// https://webaim.org/resources/contrastchecker/
+
+$talent-ready: #e3e3e3;
+$talent-ready-hover: white;
+$talent-ready-text: black;
+$talent-active: #ffba27;
+$talent-active-hover: #ffff64;
+$talent-active-text: black;
+$talent-inactive: #353535;
+$talent-inactive-hover: #494949;
+$talent-inactive-text: #e3e3e3;
+//TODO: these are just temp colors.
+$talent-invalid: #c00;
+$talent-invalid-hover: #e22;
+$talent-invalid-text: black;
