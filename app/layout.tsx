@@ -3,7 +3,6 @@ import { StoreProvider } from "./StoreProvider";
 import type { Metadata } from "next";
 
 import { Roboto_Mono } from "next/font/google";
-import { TopNav } from "@/components/Nav/TopNav";
 import "./custom.scss";
 
 const robotoMono = Roboto_Mono({
@@ -24,10 +23,7 @@ export default function RootLayout({ children }: Props) {
   return (
     <StoreProvider>
       <html lang="en" className={robotoMono.className}>
-        <body>
-          <TopNav />
-          <main>{children}</main>
-        </body>
+        <body>{children}</body>
       </html>
     </StoreProvider>
   );
