@@ -16,6 +16,10 @@ export default function Layout({ params: { section, tab }, children }: Props) {
 
   if (!data[section]) return notFound();
 
+  /*TODO: 
+    - This should be sending all the tabs for the section, and letting bootstrap
+      to determine how many to show.
+  */
   return (
     <>
       <SectionNav data={data} activeSection={section}>

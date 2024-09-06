@@ -1,3 +1,4 @@
+import SingleTalent from "@/components/Talent/SingleTalent";
 import { data } from "@/lib/dataParsed";
 import { notFound } from "next/navigation";
 import { ScriptProps } from "next/script";
@@ -15,5 +16,28 @@ export default function Page({ params }: Props) {
 
   if (!data[section]?.[tab]) return notFound();
 
-  return `sec: ${section}, tab: ${tab}`;
+  let maxY = 0;
+  let maxX = 0;
+  const talents = Object.entries(data[section][tab]).map(
+    /**
+     * This loop is doing 2 things:
+     * * It creates an array of <SingleTalent> entries
+     * * It also finds the max values of X and Y for this tab
+     */
+    ([id, talent]) => {
+      maxY = talent.y > maxY ? talent.y : maxY;
+      maxX = talent.x > maxX ? talent.x : maxX;
+      return (
+        <SingleTalent
+          key={id}
+          data={talent}
+          section={section}
+          tab={tab}
+          id={id}
+        />
+      );
+    }
+  );
+
+  return <>{talents}</>;
 }

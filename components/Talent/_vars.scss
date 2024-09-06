@@ -1,0 +1,26 @@
+@use "@/app/colors";
+
+$size: 3.5em;
+$border-size: 1px;
+$clip-path: polygon(
+  0 0,
+  0 100%,
+  calc(100% - 4px) 100%,
+  100% calc(100% - 4px),
+  100% 0
+);
+
+$active-color: colors.$talent-active;
+$active-hover: colors.$talent-active-hover;
+$active-text: colors.$talent-active-text;
+$inactive-color: colors.$talent-inactive;
+$inactive-hover: colors.$talent-inactive-hover;
+$inactive-text: colors.$talent-inactive-text;
+$ready-color: colors.$talent-ready;
+$ready-hover: colors.$talent-ready-hover;
+$ready-text: colors.$talent-ready-text;
+$invalid-color: colors.$talent-invalid;
+$invalid-hover: colors.$talent-invalid-hover;
+$invalid-text: colors.$talent-invalid-text;
+
+$tier-icon-size: 21px;

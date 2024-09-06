@@ -18,9 +18,9 @@ export const SectionNav = ({ data, children, activeSection }: Props) => {
       <Navbar expand="lg">
         <Navbar.Brand href="/" as={Link}>
           Icarus Build Tool
+          <Navbar.Toggle aria-controls="section-nav" />
         </Navbar.Brand>
-        <Navbar.Toggle aria-controls="section-nav" />
-        <Navbar.Collapse id="section-nav">
+        <Navbar.Collapse id="section-nav" className="flex-column">
           <Nav
             variant="pills"
             className="justify-content-center flex-grow-1 pe-3"
