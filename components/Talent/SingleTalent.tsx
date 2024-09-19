@@ -17,7 +17,6 @@ import { Talent } from "@/lib/_data";
 
 /**
  * ```
-https://nextjs.org/docs/getting-started/react-essentials#the-use-client-directive
 data = {
   "name": "Bow Agility",
   "desc": "Faster movespeed while holding bows",

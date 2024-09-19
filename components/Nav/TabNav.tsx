@@ -13,14 +13,16 @@ interface Props extends ScriptProps {
 export const TabNav = ({ tabs, section, activeTab }: Props) => {
   return (
     <Nav variant="pills" className="justify-content-center flex-grow-1 pe-3">
-      {tabs.map((tab) => (
-        <TabLink
-          section={encodeURIComponent(section)}
-          name={tab}
-          active={activeTab === tab}
-          key={tab}
-        />
-      ))}
+      {tabs.map((tab) => {
+        return (
+          <TabLink
+            section={encodeURIComponent(section)}
+            name={tab}
+            active={activeTab === tab}
+            key={tab}
+          />
+        );
+      })}
     </Nav>
   );
 };

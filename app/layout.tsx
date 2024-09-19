@@ -13,17 +13,22 @@ const robotoMono = Roboto_Mono({
 
 interface Props {
   readonly children: ReactNode;
+  readonly nav?: ReactNode;
 }
 
 export const metadata: Metadata = {
   title: "Icarus Build Tool",
 };
 
-export default function RootLayout({ children }: Props) {
+export default function RootLayout({ children, nav }: Props) {
+  console.log("main layout");
   return (
     <StoreProvider>
       <html lang="en" className={robotoMono.className}>
-        <body>{children}</body>
+        <body>
+          {nav}
+          <main>{children}</main>
+        </body>
       </html>
     </StoreProvider>
   );

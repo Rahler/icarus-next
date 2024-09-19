@@ -10,7 +10,6 @@ interface Props extends ScriptProps {
 }
 
 export const SectionLink = ({ name, active }: Props) => {
-  console.log(name, active);
   let encodedName = encodeURIComponent(name);
   const className = active ? "active" : undefined;
   return (

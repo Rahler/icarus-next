@@ -14,7 +14,10 @@ export default function Page({ params }: Props) {
   const section = decodeURIComponent(params.section);
   const tab = decodeURIComponent(params.tab);
 
-  if (!data[section]?.[tab]) return notFound();
+  console.log(`inner: ${section}, ${tab}`);
+
+  if (!(Object.hasOwn(data, section) || Object.hasOwn(data[section], tab)))
+    return notFound();
 
   let maxY = 0;
   let maxX = 0;
