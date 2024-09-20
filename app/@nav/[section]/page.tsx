@@ -12,8 +12,6 @@ interface Props extends ScriptProps {
 export default function Page({ params: { section } }: Props) {
   section = decodeURIComponent(section);
 
-  console.log(`section: ${section} ${Object.hasOwn(data, section)}`);
-
   if (!Object.hasOwn(data, section)) return notFound();
 
   const tabs = Object.keys(data[section]);

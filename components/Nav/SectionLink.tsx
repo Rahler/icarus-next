@@ -1,8 +1,5 @@
-"use client";
-
 import Link from "next/link";
 import { ScriptProps } from "next/script";
-import { Nav } from "react-bootstrap";
 
 interface Props extends ScriptProps {
   name: string;
@@ -10,13 +7,16 @@ interface Props extends ScriptProps {
 }
 
 export const SectionLink = ({ name, active }: Props) => {
-  let encodedName = encodeURIComponent(name);
-  const className = active ? "active" : undefined;
   return (
     <nav>
-      <Nav.Link {...{ className }} as={Link} href={`/${encodedName}`}>
+      <Link
+        href={"/" + encodeURIComponent(name)}
+        className={`btn ${active ? "btn-primary" : "btn-outline-secondary"}`}
+        aria-current={active ? "page" : undefined}
+      >
+        {" "}
         {name}
-      </Nav.Link>
+      </Link>
     </nav>
   );
 };

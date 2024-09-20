@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { StoreProvider } from "./StoreProvider";
 import type { Metadata } from "next";
+import BootstrapClient from "@/components/BootstrapClient";
 
 import { Roboto_Mono } from "next/font/google";
 import "./custom.scss";
@@ -21,13 +22,13 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children, nav }: Props) {
-  console.log("main layout");
   return (
     <StoreProvider>
       <html lang="en" className={robotoMono.className}>
         <body>
           {nav}
-          <main>{children}</main>
+          <main className="container">{children}</main>
+          <BootstrapClient />
         </body>
       </html>
     </StoreProvider>
