@@ -2,12 +2,21 @@ import SingleTalent from "@/components/Talent/SingleTalent";
 import { data } from "@/lib/dataParsed";
 import { notFound } from "next/navigation";
 import { ScriptProps } from "next/script";
+import classes from "./page.module.scss";
+import { CSSProperties } from "react";
+import { TalentImagePath } from "@/lib/_utility";
 
 interface Props extends ScriptProps {
   params: {
     section: string;
     tab: string;
   };
+}
+
+interface tabCSSProperties extends CSSProperties {
+  "--talent-tab-height": number;
+  "--talent-tab-width": number;
+  "--background-image": string;
 }
 
 export default function Page({ params }: Props) {
@@ -40,5 +49,22 @@ export default function Page({ params }: Props) {
     }
   );
 
-  return <>{talents}</>;
+  const background = TalentImagePath({
+    tab,
+    section,
+    filename: "Background.png",
+  });
+
+  const style: tabCSSProperties = {
+    "--talent-tab-height": maxY + 2, // +1 because they have .5 padding around them,
+    //+1 because they are themselves 1 tall/wide
+    "--talent-tab-width": maxX + 2,
+    "--background-image": `url(${background})`,
+  };
+
+  return (
+    <div className={classes.main} style={style}>
+      {talents}
+    </div>
+  );
 }
