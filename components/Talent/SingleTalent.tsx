@@ -1,6 +1,5 @@
 "use client";
 
-import { TalentImagePath } from "@/lib/_utility";
 import classes from "./SingleTalent.module.scss";
 // import {
 //   increment,
@@ -14,6 +13,7 @@ import classes from "./SingleTalent.module.scss";
 import { CSSProperties, ScriptHTMLAttributes } from "react";
 import { ScriptProps } from "next/script";
 import { Talent } from "@/lib/_data";
+import Image from "next/image";
 
 /**
  * ```
@@ -39,7 +39,7 @@ interface TalentCSSProperties extends CSSProperties {
 }
 
 const SingleTalent = ({
-  data: { reqs, tier, values, x, y, name, affect },
+  data: { reqs, tier, values, x, y, name, affect, img_name },
   section,
   tab,
   id,
@@ -78,7 +78,6 @@ const SingleTalent = ({
     e.preventDefault();
   };
   // Lookup the icon for the talent, if it exists.
-  const icon = TalentImagePath({ section, tab, filename: `${id}.png` });
 
   // Display the tier indicator, if appropriate.
   // TODO: this should probably get broken out into its own component
@@ -107,12 +106,9 @@ const SingleTalent = ({
         <div className={classes.rank}>{`${rank}/${maxRank}`}</div>
       </div>
       {/* {tierDiv} */}
-      <div
-        className={classes.icon}
-        style={{
-          backgroundImage: `url(${icon})`,
-        }}
-      ></div>
+      <div className={classes.icon}>
+        <Image alt={name} src={`/Images/${img_name}`} height="55" width="55" />
+      </div>
     </div>
   );
 };

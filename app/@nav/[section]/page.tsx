@@ -14,7 +14,7 @@ export default function Page({ params: { section } }: Props) {
 
   if (!Object.hasOwn(data, section)) return notFound();
 
-  const tabs = Object.keys(data[section]);
+  const tabs = Object.keys(data[section].tabs);
 
   return <TabNav tabs={tabs} section={section} />;
 }

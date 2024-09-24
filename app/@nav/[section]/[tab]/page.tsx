@@ -14,10 +14,10 @@ export default function Page({ params: { section, tab } }: Props) {
   section = decodeURIComponent(section);
   tab = decodeURIComponent(tab);
 
-  if (!(Object.hasOwn(data, section) && Object.hasOwn(data[section], tab)))
+  if (!(Object.hasOwn(data, section) && Object.hasOwn(data[section].tabs, tab)))
     return notFound();
 
-  const tabs = Object.keys(data[section]);
+  const tabs = Object.keys(data[section].tabs);
 
   return <TabNav tabs={tabs} section={section} activeTab={tab} />;
 }

@@ -19,10 +19,12 @@ export interface RawData {
   affects: { [id: string]: string };
 }
 export interface Tab {
-  [talentId: string]: Talent;
+  background: string;
+  talents: { [talentId: string]: Talent };
 }
 export interface Section {
-  [tabName: string]: Tab;
+  background: string;
+  tabs: { [tabName: string]: Tab };
 }
 export interface Data {
   [sectionName: string]: Section;
