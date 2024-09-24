@@ -10,11 +10,12 @@ interface Props extends ScriptProps {
 export const TabLink = ({ section, name, active }: Props) => {
   let encodedName = encodeURIComponent(name);
   return (
-    <li className="nav-item ">
+    <li className="nav-item">
       <Link
-        className={`btn ${active ? "btn-primary" : "btn-outline-secondary"}`}
-        aria-current={active ? "true" : undefined}
+        className={`nav-link ${active ? " active" : ""}`}
+        aria-current={active ? "true" : "false"}
         href={`/${section}/${encodedName}`}
+        role="tab"
       >
         {name}
       </Link>

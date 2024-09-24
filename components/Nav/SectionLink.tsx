@@ -8,15 +8,16 @@ interface Props extends ScriptProps {
 
 export const SectionLink = ({ name, active }: Props) => {
   return (
-    <nav>
+    <li className="nav-item">
       <Link
         href={"/" + encodeURIComponent(name)}
-        className={`btn ${active ? "btn-primary" : "btn-outline-secondary"}`}
+        className={`nav-link ${active ? " active" : ""}`}
         aria-current={active ? "page" : undefined}
+        role="tab"
       >
         {" "}
         {name}
       </Link>
-    </nav>
+    </li>
   );
 };

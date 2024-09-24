@@ -9,7 +9,7 @@ interface Props extends ScriptProps {
 
 export const TabNav = ({ tabs, section, activeTab }: Props) => {
   return (
-    <ul className="navbar-nav">
+    <ul className="navbar-nav gap-1 nav-tabs" role="tablist">
       {tabs.map((tab) => {
         return (
           <TabLink

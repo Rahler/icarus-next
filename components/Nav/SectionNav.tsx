@@ -26,14 +26,19 @@ export const SectionNav = ({ data, children, activeSection }: Props) => {
         >
           <span className="navbar-toggler-icon"></span>
         </button>
-        <div className="collapse navbar-collapse" id="navbarSection">
-          {Object.keys(data).map((section) => (
-            <SectionLink
-              name={section}
-              key={section}
-              active={activeSection === section}
-            />
-          ))}
+        <div
+          className="collapse navbar-collapse flex-column row-gap-1"
+          id="navbarSection"
+        >
+          <ul className="navbar-nav gap-1 nav-tabs" role="tablist">
+            {Object.keys(data).map((section) => (
+              <SectionLink
+                name={section}
+                key={section}
+                active={activeSection === section}
+              />
+            ))}
+          </ul>
           {children}
         </div>
       </div>
