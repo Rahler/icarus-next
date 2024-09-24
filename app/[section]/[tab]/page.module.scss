@@ -1,0 +1,12 @@
+@use "@/app/vars";
+
+.main {
+  position: relative;
+  margin: 0 auto;
+  height: calc(var(--talent-tab-height) * vars.$size);
+  width: calc(var(--talent-tab-width) * vars.$size);
+  background-image: var(--background-image);
+  background-attachment: local;
+  background-repeat: no-repeat;
+  background-size: cover;
+}

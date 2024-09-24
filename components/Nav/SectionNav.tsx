@@ -1,7 +1,3 @@
-"use client";
-import Container from "react-bootstrap/Container";
-import Nav from "react-bootstrap/Nav";
-import Navbar from "react-bootstrap/Navbar";
 import { SectionLink } from "./SectionLink";
 import { ScriptProps } from "next/script";
 import Link from "next/link";
@@ -14,17 +10,27 @@ interface Props extends ScriptProps {
 
 export const SectionNav = ({ data, children, activeSection }: Props) => {
   return (
-    <Container>
-      <Navbar expand="lg">
-        <Navbar.Brand href="/" as={Link}>
+    <nav className="navbar navbar-expand-lg">
+      <div className="container-fluid">
+        <Link href="/" className="navbar-brand">
           Icarus Build Tool
-        </Navbar.Brand>
-        <Navbar.Toggle aria-controls="section-nav" />
-        <Navbar.Collapse id="section-nav">
-          <Nav
-            variant="pills"
-            className="justify-content-center flex-grow-1 pe-3"
-          >
+        </Link>
+        <button
+          className="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarSection"
+          aria-controls="navbarSection"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span className="navbar-toggler-icon"></span>
+        </button>
+        <div
+          className="collapse navbar-collapse flex-column row-gap-1"
+          id="navbarSection"
+        >
+          <ul className="navbar-nav gap-1 nav-tabs" role="tablist">
             {Object.keys(data).map((section) => (
               <SectionLink
                 name={section}
@@ -32,10 +38,10 @@ export const SectionNav = ({ data, children, activeSection }: Props) => {
                 active={activeSection === section}
               />
             ))}
-          </Nav>
+          </ul>
           {children}
-        </Navbar.Collapse>
-      </Navbar>
-    </Container>
+        </div>
+      </div>
+    </nav>
   );
 };

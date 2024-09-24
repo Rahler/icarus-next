@@ -1,0 +1,98 @@
+@use "@/app/vars";
+
+.main {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  position: absolute;
+  left: calc(var(--single-talent-x) * vars.$size);
+  top: calc(var(--single-talent-y) * vars.$size);
+  height: vars.$size;
+  width: vars.$size;
+  user-select: none;
+  &:hover {
+    --bg-color: var(--hover-color);
+  }
+}
+.active,
+.invalid {
+  --shadow-color: var(--bg-color);
+  box-shadow: 0 0 vars.$border-size * 2 var(--shadow-color);
+  &:hover {
+    --shadow-color: var(--hover-color);
+  }
+}
+.active {
+  --bg-color: #{vars.$active-color};
+  --text-color: #{vars.$active-text};
+  --hover-color: #{vars.$active-hover};
+}
+.inactive {
+  --bg-color: #{vars.$inactive-color};
+  --text-color: #{vars.$inactive-text};
+  --hover-color: #{vars.$inactive-hover};
+}
+.ready {
+  --bg-color: #{vars.$ready-color};
+  --text-color: #{vars.$ready-text};
+  --hover-color: #{vars.$ready-hover};
+}
+.invalid {
+  --bg-color: #{vars.$invalid-color};
+  --text-color: #{vars.$invalid-text};
+  --hover-color: #{vars.$invalid-hover};
+}
+
+.icon {
+  position: absolute;
+  width: calc(100% - vars.$border-size * 2);
+  aspect-ratio: 1;
+  background-repeat: no-repeat;
+  background-size: contain;
+  top: vars.$border-size;
+  left: vars.$border-size;
+  -webkit-clip-path: vars.$clip-path;
+  clip-path: vars.$clip-path;
+}
+
+.rank-outer {
+  position: absolute;
+  padding: vars.$border-size;
+  z-index: 1;
+  top: -0.7em;
+  left: -1em;
+  -webkit-clip-path: vars.$clip-path;
+  clip-path: vars.$clip-path;
+  // All this is to arrive at a color that is grayscale and at a brightness
+  // midpoint between --bg-color and --text-color
+  background-image: linear-gradient(black, black),
+    linear-gradient(var(--bg-color), var(--bg-color)),
+    linear-gradient(var(--text-color), var(--text-color));
+  background-blend-mode: saturation, hard-light;
+}
+
+.rank {
+  background-color: var(--bg-color);
+  padding: 0 2px;
+  font-size: 12px;
+  height: 16px;
+  line-height: 15px;
+  text-align: right;
+  -webkit-clip-path: vars.$clip-path;
+  clip-path: vars.$clip-path;
+  text-shadow: 0 0 3px var(--bg-color);
+}
+
+.tier {
+  position: absolute;
+  z-index: 1;
+  top: -0.9em;
+  right: -0.5em;
+  width: vars.$tier-icon-size;
+  height: vars.$tier-icon-size;
+  background-size: contain;
+  background-image: var(--bg-image);
+  &.inactive {
+    background-image: linear-gradient(black, black), var(--bg-image);
+    background-blend-mode: saturation;
+  }
+}
