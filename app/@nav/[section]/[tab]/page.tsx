@@ -14,12 +14,6 @@ export default function Page({ params: { section, tab } }: Props) {
   section = decodeURIComponent(section);
   tab = decodeURIComponent(tab);
 
-  console.log(
-    `inner: ${section},${tab} ${
-      Object.hasOwn(data, section) && Object.hasOwn(data[section], tab)
-    }`
-  );
-
   if (!(Object.hasOwn(data, section) && Object.hasOwn(data[section], tab)))
     return notFound();
 
