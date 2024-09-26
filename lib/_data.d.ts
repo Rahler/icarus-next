@@ -18,8 +18,8 @@ interface RawData<T extends basicTemplate> {
   /** A set of defaults that can be filled in per row */
   Defaults: T;
   /** Not needed for our purposes */
-  Columns?: { any: any }[];
-  Rows: [T];
+  Columns?: {}[];
+  Rows: T[];
 }
 
 type dlcName = "Laika" | "NewFrontiers" | "Styx" | "Galileo";
@@ -95,7 +95,7 @@ type BlankBackground = "/Game/Assets/2DArt/UI/Windows/EmptyAsset.EmptyAsset";
 interface Tree extends BasicTemplate {
   DisplayName;
   /**
-   * Fully qualified path to the background from the game root, E.G. ```"/Game/Assets/2DArt/UI/Talents/Backgrounds/Adventure_Fishing_Background.Adventure_Fishing_Background"```
+   * Fully qualified path to the background from the game root
    */
   BackgroundTexture?: pngPath;
   /** This needs to match a name from D_TalentArchetypes.json */
@@ -103,18 +103,23 @@ interface Tree extends BasicTemplate {
     RowName: string;
   };
   FirstRank?: {
+    /** This needs to match a name from D_TalentRanks.json */
     RowName: string;
   };
   RequiredLevel?: number;
 }
 
 /**
- * This massively overloaded type is not just player and creature talents, but also blueprints, workshop items, and prospects.
+ * This massively overloaded type is not just player and creature talents,
+ * but also blueprints, workshop items, and prospects.
  */
 type Talent = PlayerTalent;
+type GrantedStats = `(Value=\\"${string}\\")`;
+type Rank = "Novice" | "Apprentice" | "Journeyman" | "Master";
 interface PlayerTalent extends BasicTemplate {
   /**
-   * Reroutes are non-intractable, invisible nodes used to form intersections in the requirement trees.
+   * Reroutes are non-intractable, invisible nodes used to form intersections
+   * in the requirement trees.
    */
   bIsReroute: boolean;
   DisplayName;
@@ -125,64 +130,39 @@ interface PlayerTalent extends BasicTemplate {
     RowName: string;
   };
   Position: {
-    X: 0;
-    Y: 0;
+    X: number;
+    Y: number;
   };
   Size: {
-    X: 64;
-    Y: 64;
+    X: number;
+    Y: number;
   };
   Rewards: {
-    GrantedStats: { string: number };
+    /** Bonus to a specific stat */
+    GrantedStats: { [key: GrantedStats]: number };
+    /** Feature unlocks E.G. the ability to learn stick breakdown from inventory */
     GrantedFlags: string[];
   }[];
-  RequiredTalents?: { RowName: string; DataTableName: "D_Talents" }[];
+  RequiredTalents?: {
+    /**
+     * This needs to match a name from D_Talents.json
+     */
+    RowName: string;
+    /** Not needed for our purposes
+     *
+     * I'm hardcoding the table lookups */
+    DataTableName: "D_Talents";
+  }[];
+  /** This needs to match an element in a "GrantedFlags" array */
   RequiredFlags?: [];
+  /** Not needed for our purposes
+   *
+   * These are used to lock out certain things during missions
+   */
   ForbiddenFlags?: [];
   RequiredRank: {
     /** This needs to match a name from D_TalentRanks.json */
-    RowName: string;
+    RowName: Rank;
   };
-  RequiredLevel: number;
   bDefaultUnlocked: boolean;
 }
-
-export interface Talent {
-  readonly name: string;
-  readonly desc: string;
-  readonly reqs: string[];
-  readonly y: number;
-  readonly x: number;
-  readonly tier: number;
-  readonly affect: string;
-  readonly values: number[];
-  readonly img_name: string;
-}
-
-export interface Tab {
-  background: string;
-  talents: { [talentId: string]: Talent };
-}
-export interface Section {
-  background: string;
-  tabs: { [tabName: string]: Tab };
-}
-export interface Data {
-  [sectionName: string]: Section;
-}
-export interface TalentState {
-  rank: number;
-  readonly max: number;
-}
-export interface TabState {
-  [talentId: string]: TalentState;
-}
-export interface SectionState {
-  [tabName: string]: TabState;
-}
-export interface State {
-  [sectionName: string]: SectionState;
-}
-
-declare const data: RawData;
-export default data;
