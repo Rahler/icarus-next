@@ -11,24 +11,15 @@ interface Props extends ScriptProps {
 
 export default async function Page(props: Props) {
   const params = await props.params;
+  const section = decodeURIComponent(params.section);
 
-  const {
-    section
-  } = params;
-
-  const {
-    children
-  } = props;
-
-  section = decodeURIComponent(section);
+  const { children } = props;
 
   if (!Object.hasOwn(sections, section)) return notFound();
 
   return (
     <>
-      <SectionNav data={sections} activeSection={section}>
-        {children}
-      </SectionNav>
+      <SectionNav activeSection={section}>{children}</SectionNav>
     </>
   );
 }

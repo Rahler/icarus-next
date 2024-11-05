@@ -12,15 +12,13 @@ interface Props extends ScriptProps {
 export default async function Page(props: Props) {
   const params = await props.params;
 
-  const {
-    section
-  } = params;
-
-  section = decodeURIComponent(section);
+  const section = decodeURIComponent(params.section);
 
   if (!Object.hasOwn(sections, section)) return notFound();
 
-  const tabs = Object.keys(sections[section].tabs);
+  const tabs = Object.keys(sections[section].tabs).map((tab) => {
+    return { name: tab, text: sections[section].tabs[tab].caption };
+  });
 
   return <TabNav tabs={tabs} section={section} />;
 }
