@@ -110,7 +110,6 @@ interface PlayerTreeRow extends TreeRow {
 }
 
 type GrantedStat = `(Value=\\"${string}\\")`;
-export const GrantedStatRegex = /\(Value=\\\\(\w+)"\\\\"\)/;
 export const enum DrawMethod {
   "YThenX",
   "XThenY",
