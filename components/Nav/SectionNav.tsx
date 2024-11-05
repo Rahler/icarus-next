@@ -1,10 +1,9 @@
 import { SectionLink } from "./SectionLink";
 import { ScriptProps } from "next/script";
 import Link from "next/link";
-import { sections, Sections } from "@/lib/dataParsed";
+import { sections } from "@/lib/dataParsed";
 
 interface Props extends ScriptProps {
-  sections: Sections;
   activeSection?: string;
 }
 
@@ -34,6 +33,7 @@ export const SectionNav = ({ children, activeSection }: Props) => {
             {Object.keys(sections).map((section) => (
               <SectionLink
                 name={section}
+                text={sections[section].caption}
                 key={section}
                 active={activeSection === section}
               />

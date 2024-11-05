@@ -4,10 +4,11 @@ import { ScriptProps } from "next/script";
 interface Props extends ScriptProps {
   section: string;
   name: string;
+  text: string;
   active: boolean;
 }
 
-export const TabLink = ({ section, name, active }: Props) => {
+export const TabLink = ({ section, name, text, active }: Props) => {
   let encodedName = encodeURIComponent(name);
   return (
     <li className="nav-item">
@@ -17,7 +18,7 @@ export const TabLink = ({ section, name, active }: Props) => {
         href={`/${section}/${encodedName}`}
         role="tab"
       >
-        {name}
+        {text}
       </Link>
     </li>
   );
