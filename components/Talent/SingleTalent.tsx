@@ -12,8 +12,8 @@ import classes from "./SingleTalent.module.scss";
 // import TalentTooltip from "./TalentTooltip/TalentTooltip";
 import { CSSProperties, ScriptHTMLAttributes } from "react";
 import { ScriptProps } from "next/script";
-import { Talent } from "@/lib/_data";
 import Image from "next/image";
+import { Talent, ranks } from "@/lib/dataParsed";
 
 /**
  * ```
@@ -38,12 +38,10 @@ interface TalentCSSProperties extends CSSProperties {
   "--single-talent-y": number;
 }
 
-const SingleTalent = ({
-  data: { reqs, tier, values, x, y, name, affect, img_name },
-  section,
-  tab,
-  id,
-}: Props) => {
+const SingleTalent = ({ data, section, tab, id }: Props) => {
+  // TODO this is debug code
+  const [reqsMet, tierMet, invested, rank] = [true, true, 1, 1];
+
   // const dispatch = useDispatch();
   // const rank = useSelector(selectTalentGenerator({ section, tab, id }));
   // const reqsMet = useSelector(
@@ -54,14 +52,14 @@ const SingleTalent = ({
   //   })
   // );
   // const tierMet = useSelector(selectTierGenerator({ section, tab })) >= tier;
-  const [reqsMet, tierMet, rank] = [true, true, 1];
-  const maxRank = values.length;
+
+  const maxRank = data.rewards.length;
   const state =
     reqsMet && tierMet
-      ? rank > 0
+      ? invested > 0
         ? "active"
         : "ready"
-      : rank > 0
+      : invested > 0
       ? "invalid"
       : "inactive";
 
@@ -77,26 +75,20 @@ const SingleTalent = ({
     // dispatch(decrement({ section, tab, id }));
     e.preventDefault();
   };
-  // Lookup the icon for the talent, if it exists.
 
   // Display the tier indicator, if appropriate.
   // TODO: this should probably get broken out into its own component
-  // let tierDiv;
-  // if (tier > 0) {
-  //   const tierIcon = ImagePath(`tier_${tier}.png`);
-  //   let className = classes.tier;
-  //   if (!tierMet) className += ` ${classes.inactive}`;
-  //   tierDiv = (
-  //     <div
-  //       className={className}
-  //       style={{ "--bg-image": `url(${tierIcon})` }}
-  //     ></div>
-  //   );
-  // }
+  let tierDiv;
+  if (data.rank > 0) {
+    const style = { "--bg-image": `url(${ranks[data.rank].icon})` };
+    let className = classes.tier;
+    if (!tierMet) className += ` ${classes.inactive}`;
+    tierDiv = <div className={className} style={style}></div>;
+  }
 
   attrs.style = {
-    "--single-talent-x": x + 0.5,
-    "--single-talent-y": y + 0.5,
+    "--single-talent-x": data.pos.x,
+    "--single-talent-y": data.pos.y,
   } as TalentCSSProperties;
   attrs.className = classArray.join(" ");
 
@@ -107,7 +99,7 @@ const SingleTalent = ({
       </div>
       {/* {tierDiv} */}
       <div className={classes.icon}>
-        <Image alt={name} src={`/Images/${img_name}`} height="55" width="55" />
+        <Image alt={data.caption} src={data.icon} height="55" width="55" />
       </div>
     </div>
   );

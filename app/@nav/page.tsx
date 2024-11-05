@@ -1,6 +1,6 @@
 import { SectionNav } from "@/components/Nav/SectionNav";
-import { data } from "@/lib/dataParsed";
+import { sections } from "@/lib/dataParsed";
 
 export default function Page() {
-  return <SectionNav data={data} />;
+  return <SectionNav sections={sections} />;
 }
