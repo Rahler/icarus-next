@@ -4,13 +4,20 @@ import { notFound } from "next/navigation";
 import { ScriptProps } from "next/script";
 
 interface Props extends ScriptProps {
-  params: {
+  params: Promise<{
     section: string;
     tab: string;
-  };
+  }>;
 }
 
-export default function Page({ params: { section, tab } }: Props) {
+export default async function Page(props: Props) {
+  const params = await props.params;
+
+  const {
+    section,
+    tab
+  } = params;
+
   section = decodeURIComponent(section);
   tab = decodeURIComponent(tab);
 

@@ -6,13 +6,14 @@ import classes from "./page.module.scss";
 import { CSSProperties } from "react";
 
 interface Props extends ScriptProps {
-  params: {
+  params: Promise<{
     section: string;
     tab: string;
-  };
+  }>;
 }
 
-export default function Page({ params }: Props) {
+export default async function Page(props: Props) {
+  const params = await props.params;
   const section = decodeURIComponent(params.section);
   const tab = decodeURIComponent(params.tab);
 
