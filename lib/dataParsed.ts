@@ -54,9 +54,14 @@ export interface Rank {
   order: number;
 }
 
+export interface StatNames {
+  [name: string]: { positiveName: string; negativeName: string };
+}
+
 export const sections: Sections = {};
 export const ranks: { [name: string]: Rank } = {};
 export const rankOrder: string[] = [];
+export const statNames: StatNames = {};
 /** This reverse lookup hash is because I want to store the tree top-down,
  * but the data is bottom-up.
  */
@@ -153,7 +158,16 @@ rawTalents.Rows.forEach((row) => {
             number
           ][]
         ).forEach(([name, val]) => {
-          stats[convertGrantedStatName(name)] = val;
+          const convertedName = convertGrantedStatName(name);
+          stats[convertedName] = val;
+          statNames[convertedName] ??= {
+            positiveName: localizationCall(
+              `NSLOCTEXT("D_Stats", "${convertedName}-PositiveDescription", "${convertedName}")`
+            ),
+            negativeName: localizationCall(
+              `NSLOCTEXT("D_Stats", "${convertedName}-NegativeDescription", "${convertedName}")`
+            ),
+          };
         });
         return { stats, flags: reward.GrantedFlags };
       }),
