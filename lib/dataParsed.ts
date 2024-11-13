@@ -2,15 +2,20 @@ import rawArchetypes from "./MinedData/Talents/D_TalentArchetypes";
 import rawTrees from "./MinedData/Talents/D_TalentTrees";
 import rawTalents from "./MinedData/Talents/D_Talents";
 import rawRanks from "./MinedData/Talents/D_TalentRanks";
-import Mined from "./MinedData/_Mined";
+import Mined, { TalentFileReward } from "./MinedData/_Mined";
 import localizationCall from "./MinedData/localize";
 import { localPngPath, convertToLocalImagePath } from "./MinedData/pngPath";
-
-type bitmask = number;
+import {
+  convertGrantedStatName,
+  minedGrantedStatName,
+} from "./MinedData/statName";
 
 export interface Section {
+  /** Human-readable name */
   caption: string;
+  /** Full path to the icon */
   icon: localPngPath;
+  /** All the {@link Tab | tabs} that are nested under this section */
   tabs: { [name: string]: Tab };
 }
 export interface Sections {
@@ -25,10 +30,12 @@ export interface Tab {
 }
 
 export type TalentReward = {
-  stats: { [key: string]: number };
-  unlocks: bitmask;
+  stats: { [statName: string]: number };
+  flags: string[];
 };
 
+/** This represents individual talents (currently only player talents)
+ */
 export interface Talent {
   caption: string;
   description: string;
@@ -36,7 +43,8 @@ export interface Talent {
   pos: { x: number; y: number };
   rewards: TalentReward[];
   reqs?: string[];
-  rank: number;
+  /** Needs to match a key in {@link ranks} */
+  rank: string;
 }
 
 export interface Rank {
@@ -55,19 +63,28 @@ export const rankOrder: string[] = [];
 const TabToSectionHash: { [tab: string]: string } = {};
 
 // Data function definitions
-/** This will need to be updated if we ever start importing anything other than player talents */
+/** TODO: This will need to be updated if we ever start importing anything other than player talents */
 function isPlayerTreeRow(test: Mined.TreeRow): test is Mined.PlayerTreeRow {
   return Object.hasOwn(sections, test.Archetype.RowName);
 }
-/** This will need to be updated if we ever start importing anything other than player talents */
+/** TODO: This will need to be updated if we ever start importing anything other than player talents */
 function isPlayerTalent(
   test: Mined.TalentFileRow
 ): test is Mined.PlayerTalentRow {
-  return Object.hasOwn(sections, TabToSectionHash[test.Name]);
+  return (
+    Object.hasOwn(TabToSectionHash, test.TalentTree.RowName) && !test.bIsReroute
+  );
+}
+
+/** TODO: This will need to be updated if we ever start importing anything other than player talents */
+function isPlayerReroute(test: Mined.TalentFileRow): test is Mined.Reroute {
+  return (
+    Object.hasOwn(TabToSectionHash, test.TalentTree.RowName) && test.bIsReroute
+  );
 }
 
 /**
- *
+ *TODO:
  * In the process of switching from namespaces to modules (which is the react default, so no special syntax)
  * and converting the enums to regular vars, so that they can be extracted from mined data
  *
@@ -101,8 +118,8 @@ rawArchetypes.Rows.forEach((row) => {
 }); // END Archetypes import to sections
 
 // Now we pull the trees that we care about in as tabs
-/** If we ever start caring about non-player archetypes,
- * this function will need to be updated. */
+/** TODO: If we ever start caring about non-player archetypes, this function
+ * will need to be updated. */
 rawTrees.Rows.forEach((row) => {
   if (isPlayerTreeRow(row)) {
     sections[row.Archetype.RowName].tabs[row.Name] = {
@@ -116,19 +133,31 @@ rawTrees.Rows.forEach((row) => {
 }); // END Trees import into tabs
 
 // Finally, we import the actual talents
-/** If we ever start caring about non-player archetypes,
- * this function will need to be updated. */
+/** TODO: If we ever start caring about non-player archetypes, this function
+ * will need to be updated. */
 rawTalents.Rows.forEach((row) => {
   if (isPlayerTalent(row)) {
     const tab = row.TalentTree.RowName;
     const section = TabToSectionHash[tab];
+    const rank = row.RequiredRank?.RowName ?? rankOrder[0];
     sections[section].tabs[tab].talents[row.Name] = {
       caption: localizationCall(row.DisplayName),
       description: localizationCall(row.Description),
       icon: convertToLocalImagePath(row.Icon),
       pos: { x: row.Position.X, y: row.Position.Y },
-      rewards: row.Rewards,
-      rank: row.RequiredRank.RowName,
+      rewards: row.Rewards.map((reward): TalentReward => {
+        const stats: { [name: string]: number } = {};
+        (
+          Object.entries(reward.GrantedStats) as [
+            minedGrantedStatName,
+            number
+          ][]
+        ).forEach(([name, val]) => {
+          stats[convertGrantedStatName(name)] = val;
+        });
+        return { stats, flags: reward.GrantedFlags };
+      }),
+      rank: rank ?? rankOrder[0],
     };
   }
 });

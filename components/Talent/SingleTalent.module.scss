@@ -1,11 +1,8 @@
 @use "@/app/vars";
 
 .main {
-  background-color: var(--bg-color);
   color: var(--text-color);
   position: absolute;
-  left: calc(var(--single-talent-x) * vars.$size);
-  top: calc(var(--single-talent-y) * vars.$size);
   height: vars.$size;
   width: vars.$size;
   user-select: none;
@@ -15,10 +12,11 @@
 }
 .active,
 .invalid {
-  --shadow-color: var(--bg-color);
-  box-shadow: 0 0 vars.$border-size * 2 var(--shadow-color);
+  --glow-color: var(--bg-color);
+  filter: drop-shadow(0px 0px 3px var(--glow-color))
+    drop-shadow(0px 0px 5px var(--glow-color)) drop-shadow(2px 4px 6px black);
   &:hover {
-    --shadow-color: var(--hover-color);
+    --glow-color: var(--hover-color);
   }
 }
 .active {
@@ -45,9 +43,6 @@
 .icon {
   position: absolute;
   width: calc(100% - vars.$border-size * 2);
-  aspect-ratio: 1;
-  background-repeat: no-repeat;
-  background-size: contain;
   top: vars.$border-size;
   left: vars.$border-size;
   -webkit-clip-path: vars.$clip-path;
@@ -58,8 +53,8 @@
   position: absolute;
   padding: vars.$border-size;
   z-index: 1;
-  top: -0.7em;
-  left: -1em;
+  top: -5px;
+  left: -5px;
   -webkit-clip-path: vars.$clip-path;
   clip-path: vars.$clip-path;
   // All this is to arrive at a color that is grayscale and at a brightness
@@ -85,14 +80,6 @@
 .tier {
   position: absolute;
   z-index: 1;
-  top: -0.9em;
-  right: -0.5em;
-  width: vars.$tier-icon-size;
-  height: vars.$tier-icon-size;
-  background-size: contain;
-  background-image: var(--bg-image);
-  &.inactive {
-    background-image: linear-gradient(black, black), var(--bg-image);
-    background-blend-mode: saturation;
-  }
+  top: -10px;
+  right: -5px;
 }

@@ -1,14 +1,9 @@
 @use "@/app/colors";
 
-$size: 55px;
-$border-size: 1px;
-$clip-path: polygon(
-  0 0,
-  0 100%,
-  calc(100% - 4px) 100%,
-  100% calc(100% - 4px),
-  100% 0
-);
+/* if you adjust this, make sure to also adjust _vars.ts */
+$size: 68px;
+$border-size: 2px;
+$clip-path: polygon(0 0, 0 100%, 80% 100%, 100% 80%, 100% 0);
 
 $active-color: colors.$talent-active;
 $active-hover: colors.$talent-active-hover;
@@ -22,5 +17,3 @@ $ready-text: colors.$talent-ready-text;
 $invalid-color: colors.$talent-invalid;
 $invalid-hover: colors.$talent-invalid-hover;
 $invalid-text: colors.$talent-invalid-text;
-
-$tier-icon-size: 21px;

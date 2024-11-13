@@ -13,11 +13,7 @@ import classes from "./SingleTalent.module.scss";
 import { ScriptProps } from "next/script";
 import Image from "next/image";
 import { Talent, ranks } from "@/lib/dataParsed";
-import {
-  SingleTalentAttrs,
-  SingleTalentCSSProperties,
-  TierAttrs,
-} from "./_types";
+import { SingleTalentAttrs, TierAttrs } from "./_types";
 
 /**
  * ```
@@ -45,13 +41,19 @@ const SingleTalent = ({ data, section, tab, id }: Props) => {
   // TODO: this should probably get broken out into its own component
   let tierDiv;
   if (ranks[data.rank].order > 0) {
-    const style = {
-      "--bg-image": `url(${ranks[data.rank].icon})`,
-    };
     let className = classes.tier;
     if (!tierMet) className += ` ${classes.inactive}`;
-    const tierAttrs: TierAttrs = { style, className };
-    tierDiv = <div {...tierAttrs}></div>;
+    const tierAttrs: TierAttrs = { className };
+    tierDiv = (
+      <div {...tierAttrs}>
+        <Image
+          alt={ranks[data.rank].caption}
+          src={ranks[data.rank].icon}
+          height="21"
+          width="21"
+        />
+      </div>
+    );
   }
 
   // const dispatch = useDispatch();
@@ -89,9 +91,8 @@ const SingleTalent = ({ data, section, tab, id }: Props) => {
       e.preventDefault();
     },
     style: {
-      "--bg-image": data.icon,
-      "--single-talent-x": data.pos.x,
-      "--single-talent-y": data.pos.y,
+      left: `${data.pos.x}px`,
+      top: `${data.pos.y}px`,
     },
     className: classArray.join(" "),
   };
@@ -103,7 +104,7 @@ const SingleTalent = ({ data, section, tab, id }: Props) => {
       </div>
       {tierDiv}
       <div className={classes.icon}>
-        <Image alt={data.caption} src={data.icon} height="55" width="55" />
+        <Image alt={data.caption} src={data.icon} height="64" width="64" />
       </div>
     </div>
   );

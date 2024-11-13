@@ -1,5 +1,6 @@
-import { loc } from "./localize";
+import { callString } from "./localize";
 import { minedPngPath as pngPath } from "./pngPath";
+import { minedGrantedStatName as GrantedStat } from "./statName";
 
 interface rowTemplate {
   /**
@@ -11,7 +12,7 @@ interface rowTemplate {
 
   The result of the call will be the user-viewable name.
   */
-  DisplayName?: loc.func;
+  DisplayName?: callString;
   /**
    * Fully qualified path to the icon from the game root, E.G. ```"/Game/Assets/2DArt/UI/Icons/Icon_TalentRank0.Icon_TalentRank0"```
    */
@@ -51,9 +52,9 @@ interface RawData<T extends rowTemplate> {
 }
 
 interface Rank extends rowTemplate {
-  Name: RankName;
+  Name: string;
   DisplayName: NonNullable<rowTemplate["DisplayName"]>;
-  Icon: nonNullable<rowTemplate["Icon"]>;
+  Icon: NonNullable<rowTemplate["Icon"]>;
   /**
    * How many total points must be invested in a tree to reach this rank.
    */
@@ -63,7 +64,7 @@ interface Rank extends rowTemplate {
    */
   NextRank?: {
     /** This needs to match a name from D_TalentRanks.json */
-    RowName: string;
+    RowName: Rank["Name"];
   };
 }
 
@@ -75,10 +76,11 @@ interface Rank extends rowTemplate {
  * For workshop items, this is the category.
  */
 interface Archetype extends rowTemplate {
-  DisplayName: nonNullable<rowTemplate["DisplayName"]>;
-  Icon: nonNullable<rowTemplate["Icon"]>;
+  DisplayName: NonNullable<rowTemplate["DisplayName"]>;
+  Icon: NonNullable<rowTemplate["Icon"]>;
   /**
    * This tells us what category this archetype falls under.
+   * Currently we only care about "Player" rows.
    */
   Model: {
     RowName: string;
@@ -86,45 +88,42 @@ interface Archetype extends rowTemplate {
   RequiredLevel?: number;
 }
 
-export type BlankBackground =
-  "/Game/Assets/2DArt/UI/Windows/EmptyAsset.EmptyAsset";
 interface TreeRow extends rowTemplate {
-  DisplayName: nonNullable<rowTemplate["DisplayName"]>;
-  Icon: nonNullable<rowTemplate["Icon"]>;
+  DisplayName: NonNullable<rowTemplate["DisplayName"]>;
+  Icon: NonNullable<rowTemplate["Icon"]>;
   /**
    * Fully qualified path to the background from the game root
    */
   BackgroundTexture?: pngPath;
   /** This needs to match a name from D_TalentArchetypes.json */
   Archetype: {
-    RowName: string;
+    RowName: Archetype["Name"];
   };
   FirstRank?: {
     /** This needs to match a name from D_TalentRanks.json */
-    RowName: Rank;
+    RowName: Rank["Name"];
   };
 }
 interface PlayerTreeRow extends TreeRow {
-  BackgroundTexture: nonNullable<TreeRow["BackgroundTexture"]>;
-  FirstRank: nonNullable<TreeRow["FirstRank"]>;
+  BackgroundTexture: NonNullable<TreeRow["BackgroundTexture"]>;
+  FirstRank: NonNullable<TreeRow["FirstRank"]>;
 }
 
-type GrantedStat = `(Value=\\"${string}\\")`;
 export const enum DrawMethod {
   "YThenX",
   "XThenY",
   "ShortestDistance",
 }
-interface TalentReward {
+interface TalentFileReward {
   /** Bonus to a specific stat */
-  GrantedStats: { [key: GrantedStats]: number };
+  GrantedStats: { [key: GrantedStat]: number };
   /** Feature unlocks E.G. the ability to learn stick breakdown from inventory */
   GrantedFlags: string[];
 }
 interface talentFileTemplate extends rowTemplate {
   TalentTree: {
     /** This needs to match a name from D_TalentTrees.json */
-    RowName: string;
+    RowName: TreeRow["Name"];
   };
   Position: {
     X: number;
@@ -139,7 +138,7 @@ interface talentFileTemplate extends rowTemplate {
    * in the requirement trees.
    */
   bIsReroute?: boolean;
-  Rewards?: TalentRewards[];
+  Rewards?: TalentFileReward[];
   RequiredTalents?: {
     /**
      * This needs to match a name from D_Talents.json
@@ -147,7 +146,9 @@ interface talentFileTemplate extends rowTemplate {
     RowName: string;
     /** Not needed for our purposes.
      *
-     * I'm hardcoding the table lookups */
+     * UE uses this to identify which table to look this up in,
+     * but I'm hardcoding the table lookups
+     */
     DataTableName: "D_Talents";
   }[];
   /** This needs to match an element in a "GrantedFlags" array */
@@ -160,7 +161,7 @@ interface talentFileTemplate extends rowTemplate {
   ForbiddenFlags?: [];
   RequiredRank?: {
     /** This needs to match a name from D_TalentRanks.json */
-    RowName: Rank;
+    RowName: Rank["Name"];
   };
   /** This controls how the game renders the requirement lines.
    *
@@ -168,21 +169,21 @@ interface talentFileTemplate extends rowTemplate {
    * leaning towards ignoring.
    */
   DrawMethodOverride?: DrawMethod;
-  /** Whether this is unlocked for free. Used for reroutes and starting blueprints,
-   * prospects, and missions */
+  /** Whether this is unlocked for free. Used for reroutes and
+   * initial blueprints, prospects, and missions
+   */
   bDefaultUnlocked?: boolean;
 }
 
 interface talentTemplateRow extends talentFileTemplate {
-  DisplayName: nonNullable<talentFileTemplate["DisplayName"]>;
-  Description: nonNullable<talentFileTemplate["Description"]>;
-  Icon: nonNullable<talentFileTemplate["Icon"]>;
-  Rewards: nonNullable<talentFileTemplate["Rewards"]>;
+  DisplayName: NonNullable<talentFileTemplate["DisplayName"]>;
+  Description: NonNullable<talentFileTemplate["Description"]>;
+  Icon: NonNullable<talentFileTemplate["Icon"]>;
+  Rewards: NonNullable<talentFileTemplate["Rewards"]>;
 }
 
 interface PlayerTalentRow extends talentTemplateRow {
   bIsReroute: false;
-  RequiredRank: nonNullable<talentTemplateRow["RequiredRank"]>;
 }
 interface CreatureTalentRow extends talentTemplateRow {
   bIsReroute: false;
@@ -192,30 +193,30 @@ interface CreatureTalentRow extends talentTemplateRow {
 }
 interface Blueprint extends talentFileTemplate {
   bIsReroute: false;
-  ExtraData: nonNullable<talentFileTemplate["ExtraData"]>;
-  DisplayName: nonNullable<talentFileTemplate["DisplayName"]>;
-  Icon: nonNullable<talentFileTemplate["Icon"]>;
+  ExtraData: NonNullable<talentFileTemplate["ExtraData"]>;
+  DisplayName: NonNullable<talentFileTemplate["DisplayName"]>;
+  Icon: NonNullable<talentFileTemplate["Icon"]>;
   TalentTree: {
     RowName: `Blueprint_${string}`;
   };
 }
 interface Workshop extends talentFileTemplate {
   bIsReroute: false;
-  ExtraData: nonNullable<talentFileTemplate["ExtraData"]>;
+  ExtraData: NonNullable<talentFileTemplate["ExtraData"]>;
   TalentTree: {
     RowName: `Workshop_${string}`;
   };
 }
 interface Mission extends talentFileTemplate {
   bIsReroute: false;
-  ExtraData: nonNullable<talentFileTemplate["ExtraData"]>;
+  ExtraData: NonNullable<talentFileTemplate["ExtraData"]>;
   TalentTree: {
     RowName: `Prospect_${string}`;
   };
 }
 interface Outpost extends talentFileTemplate {
   bIsReroute: false;
-  ExtraData: nonNullable<talentFileTemplate["ExtraData"]>;
+  ExtraData: NonNullable<talentFileTemplate["ExtraData"]>;
   TalentTree: {
     RowName: "Outpost";
   };

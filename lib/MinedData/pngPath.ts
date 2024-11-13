@@ -9,6 +9,6 @@ export function convertToLocalImagePath(
   minedString: minedPngPath
 ): localPngPath {
   const match = minedPngRegex.exec(minedString);
-  const location = match?.[0] ?? fallback;
+  const location = match?.[1] ?? fallback;
   return `${localImagesPath}${location}.png`;
 }
