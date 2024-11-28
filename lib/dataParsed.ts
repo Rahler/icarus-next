@@ -1,8 +1,10 @@
+/** @format */
+
 import rawArchetypes from "./MinedData/Talents/D_TalentArchetypes";
 import rawTrees from "./MinedData/Talents/D_TalentTrees";
 import rawTalents from "./MinedData/Talents/D_Talents";
 import rawRanks from "./MinedData/Talents/D_TalentRanks";
-import Mined, { TalentFileReward } from "./MinedData/_Mined";
+import Mined from "./MinedData/_Mined";
 import localizationCall from "./MinedData/localize";
 import { localPngPath, convertToLocalImagePath } from "./MinedData/pngPath";
 import {
@@ -20,6 +22,17 @@ export interface Section {
 }
 export interface Sections {
   [name: string]: Section;
+}
+export type SingleTalentState = number;
+export interface TabState {
+  /** The amount invested in that talent */
+  [talentName: string]: SingleTalentState;
+}
+export interface SectionState {
+  [tabName: string]: TabState;
+}
+export interface TalentState {
+  [SectionName: string]: SectionState;
 }
 
 export interface Tab {
@@ -62,17 +75,21 @@ export const sections: Sections = {};
 export const ranks: { [name: string]: Rank } = {};
 export const rankOrder: string[] = [];
 export const statNames: StatNames = {};
+export const initialTalentState: TalentState = {};
 /** This reverse lookup hash is because I want to store the tree top-down,
  * but the data is bottom-up.
  */
 const TabToSectionHash: { [tab: string]: string } = {};
 
-// Data function definitions
-/** TODO: This will need to be updated if we ever start importing anything other than player talents */
+/********************************************************************/
+/********************* Data function definitions ********************/
+/********************************************************************/
+
+/** This will need to be updated if we ever start importing anything other than player talents */
 function isPlayerTreeRow(test: Mined.TreeRow): test is Mined.PlayerTreeRow {
   return Object.hasOwn(sections, test.Archetype.RowName);
 }
-/** TODO: This will need to be updated if we ever start importing anything other than player talents */
+/** This will need to be updated if we ever start importing anything other than player talents */
 function isPlayerTalent(
   test: Mined.TalentFileRow
 ): test is Mined.PlayerTalentRow {
@@ -81,22 +98,15 @@ function isPlayerTalent(
   );
 }
 
-/** TODO: This will need to be updated if we ever start importing anything other than player talents */
-function isPlayerReroute(test: Mined.TalentFileRow): test is Mined.Reroute {
-  return (
-    Object.hasOwn(TabToSectionHash, test.TalentTree.RowName) && test.bIsReroute
-  );
-}
-
-/**
- *TODO:
- * In the process of switching from namespaces to modules (which is the react default, so no special syntax)
- * and converting the enums to regular vars, so that they can be extracted from mined data
- *
- */
+// /** This will need to be updated if we ever start importing anything other than player talents */
+// function isPlayerReroute(test: Mined.TalentFileRow): test is Mined.Reroute {
+//   return (
+//     Object.hasOwn(TabToSectionHash, test.TalentTree.RowName) && test.bIsReroute
+//   );
+// }
 
 // Importing the rank info (icon, required point investment, name)
-rawRanks.Rows.forEach((row) => {
+rawRanks.Rows.forEach(row => {
   ranks[row.Name] = {
     caption: localizationCall(row.DisplayName),
     icon: convertToLocalImagePath(row.Icon),
@@ -112,20 +122,25 @@ rankOrder.forEach((rank, index) => {
   ranks[rank].order = index;
 });
 
-// First, let's get the top-level archetypes, so we know which trees we care about.
-rawArchetypes.Rows.forEach((row) => {
-  if (row.Model.RowName !== "Player") return; // Only importing player talents for now.
-  sections[row.Name] = {
-    caption: localizationCall(row.DisplayName),
-    icon: convertToLocalImagePath(row.Icon),
-    tabs: {},
-  };
+/** Get the top-level archetypes, so we know which trees we care about. In the
+ * context of talents, I will be referring to them as "Sections" */
+rawArchetypes.Rows.forEach(row => {
+  /** Only importing player talents for now */
+  if (row.Model.RowName == "Player") {
+    sections[row.Name] = {
+      caption: localizationCall(row.DisplayName),
+      icon: convertToLocalImagePath(row.Icon),
+      tabs: {},
+    };
+    /** Create the top-level section object for the initial redux state */
+    initialTalentState[row.Name] = {};
+  }
 }); // END Archetypes import to sections
 
-// Now we pull the trees that we care about in as tabs
-/** TODO: If we ever start caring about non-player archetypes, this function
- * will need to be updated. */
-rawTrees.Rows.forEach((row) => {
+/** Now we pull the trees that we care about in as tabs. If we ever start
+ * caring about non-player archetypes, this function will need to be updated.
+ * */
+rawTrees.Rows.forEach(row => {
   if (isPlayerTreeRow(row)) {
     sections[row.Archetype.RowName].tabs[row.Name] = {
       caption: localizationCall(row.DisplayName),
@@ -134,13 +149,13 @@ rawTrees.Rows.forEach((row) => {
       talents: {},
     };
     TabToSectionHash[row.Name] = row.Archetype.RowName;
+    initialTalentState[row.Archetype.RowName][row.Name] = {};
   }
 }); // END Trees import into tabs
 
-// Finally, we import the actual talents
-/** TODO: If we ever start caring about non-player archetypes, this function
- * will need to be updated. */
-rawTalents.Rows.forEach((row) => {
+/** Import the talent definitions themselves. If we ever start caring about
+ * non-player archetypes, this function will need to be updated. */
+rawTalents.Rows.forEach(row => {
   if (isPlayerTalent(row)) {
     const tab = row.TalentTree.RowName;
     const section = TabToSectionHash[tab];
@@ -173,5 +188,6 @@ rawTalents.Rows.forEach((row) => {
       }),
       rank: rank ?? rankOrder[0],
     };
+    initialTalentState[section][tab][row.Name] = 0;
   }
 });

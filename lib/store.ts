@@ -1,11 +1,13 @@
 import type { Action, ThunkAction } from "@reduxjs/toolkit";
-import { combineSlices, configureStore } from "@reduxjs/toolkit";
+import { combineSlices, configureStore, createSelector } from "@reduxjs/toolkit";
+import talents from "./slices/talents";
 
 // `combineSlices` automatically combines the reducers using
 // their `reducerPath`s, therefore we no longer need to call `combineReducers`.
-const rootReducer = combineSlices(/* a, b, c */);
+const rootReducer = combineSlices({ talents });
 // Infer the `RootState` type from the root reducer
 export type RootState = ReturnType<typeof rootReducer>;
+export const createAppSelector = createSelector.withTypes<RootState>()
 
 // `makeStore` encapsulates the store configuration to allow
 // creating unique store instances, which is particularly important for
