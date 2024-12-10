@@ -1,6 +1,6 @@
 /** @format */
 
-import { sections, initialTalentState, ranks } from "../dataParsed";
+import { sections, initialTalentState } from "../dataParsed";
 import { createSlice } from "@reduxjs/toolkit";
 
 export const talentSliceName = "talents";
@@ -15,16 +15,16 @@ interface SectionState {
   [section: string]: TabState;
 }
 
-type TalentIdentifier = { section: string; tab: string; name: string };
+type TalentIdentifier = { section: string; tab: string; id: string };
 
 const setReducer = (
   state: SectionState,
   { payload }: { payload: TalentIdentifier & { newValue: number } }
 ) => {
   const max =
-    sections[payload.section].tabs[payload.tab].talents[payload.name].rewards
+    sections[payload.section].tabs[payload.tab].talents[payload.id].rewards
       .length;
-  state[payload.section][payload.tab][payload.name] =
+  state[payload.section][payload.tab][payload.id] =
     payload.newValue > max ? max : payload.newValue < 0 ? 0 : payload.newValue;
 };
 

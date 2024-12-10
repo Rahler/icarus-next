@@ -36,11 +36,11 @@ export type AppThunk<ThunkReturnType = void> = ThunkAction<
   Action
 >;
 
-type selectTalentParams = { section: string; tab: string; talent: string };
+type selectTalentParams = { section: string; tab: string; id: string };
 export const selectTalent = (
   state: RootState,
-  { section, tab, talent }: selectTalentParams
-) => state[talentSliceName][section][tab][talent];
+  { section, tab, id }: selectTalentParams
+) => state[talentSliceName][section][tab][id];
 
 type selectTabParams = { section: string; tab: string };
 export const selectTabTotal = createAppSelector(

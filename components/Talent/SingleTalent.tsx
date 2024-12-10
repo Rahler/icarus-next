@@ -8,6 +8,7 @@ import { SingleTalentAttrs } from "./_types";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import RankIndicator from "./RankIndicator";
 import { selectRankMet, selectTalent } from "@/lib/store";
+import { set } from "@/lib/slices/talents";
 
 interface Props extends ScriptProps {
   data: Talent;
@@ -25,7 +26,7 @@ const SingleTalent = ({ data, section, tab, id }: Props) => {
   const rankMet = useAppSelector((state=>{
     return selectRankMet(state, {tab, section}, data.rank)
   }))
-  const invested = useAppSelector(state=>selectTalent(state, {section, tab, talent:id}));
+  const invested = useAppSelector(state=>selectTalent(state, {section, tab, id}));
 
   const maxRank = data.rewards.length;
   const state =
@@ -43,11 +44,11 @@ const SingleTalent = ({ data, section, tab, id }: Props) => {
   const attrs: SingleTalentAttrs = {
     id,
     onClick: (e) => {
-      // dispatch(increment({ max: maxRank, section, tab, id }));
+      dispatch(set({section, tab, id, newValue:invested+1 }));
       e.preventDefault();
     },
     onContextMenu: (e) => {
-      // dispatch(decrement({ section, tab, id }));
+      dispatch(set({section, tab, id, newValue:invested-1 }));
       e.preventDefault();
     },
     style: {
