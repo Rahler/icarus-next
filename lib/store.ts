@@ -1,6 +1,7 @@
 import type { Action, ThunkAction } from "@reduxjs/toolkit";
 import { combineSlices, configureStore, createSelector } from "@reduxjs/toolkit";
 import talents, { talentSliceName } from "./slices/talents";
+import { ranks } from "./dataParsed";
 
 // `combineSlices` automatically combines the reducers using
 // their `reducerPath`s, therefore we no longer need to call `combineReducers`.
@@ -35,25 +36,25 @@ export type AppThunk<ThunkReturnType = void> = ThunkAction<
   Action
 >;
 
-type selectTalentParams = { section: string; tab: string; talent: string };
+type selectTalentParams = { section: string; tab: string; id: string };
 export const selectTalent = (
   state: RootState,
-  { section, tab, talent }: selectTalentParams
-) => state[talentSliceName][section][tab][talent];
+  { section, tab, id }: selectTalentParams
+) => state[talentSliceName][section][tab][id];
 
 type selectTabParams = { section: string; tab: string };
 export const selectTabTotal = createAppSelector(
   (state: RootState, { section, tab }: selectTabParams) =>
     state[talentSliceName][section][tab],
   tab => {
-    Object.values(tab).reduce((prev, curr) => prev + curr, 0);
+    return Object.values(tab).reduce((prev, curr) => prev + curr, 0);
   }
 );
 
 export const selectTotal = createAppSelector(
   (state: RootState) => state[talentSliceName],
   sectionState => {
-    Object.values(sectionState).reduce(
+    return Object.values(sectionState).reduce(
       (prev, curr) =>
         prev +
         Object.values(curr).reduce(
@@ -65,3 +66,7 @@ export const selectTotal = createAppSelector(
     );
   }
 );
+
+export const selectRankMet = createAppSelector(selectTabTotal, (...params: [RootState, selectTabParams, string])=>params[2], (tabInvestment, targetRank)=>{
+  return tabInvestment >= ranks[targetRank].investment
+})

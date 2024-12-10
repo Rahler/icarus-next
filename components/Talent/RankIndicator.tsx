@@ -2,17 +2,17 @@
 
 import { ranks } from "@/lib/dataParsed";
 import Image from "next/image";
-import classes from "./TierIndicator.module.scss";
+import classes from "./RankIndicator.module.scss";
 import { TierAttrs } from "./_types";
 import { ScriptProps } from "next/script";
 
 interface Props extends ScriptProps {
   rankName: string;
-  tierMet: boolean;
+  rankMet: boolean;
 }
-const TierIndicator = ({ rankName, tierMet }: Props) => {
+const RankIndicator = ({ rankName, rankMet }: Props) => {
   let className = classes.main;
-  if (!tierMet) className += ` ${classes.inactive}`;
+  if (!rankMet) className += ` ${classes.inactive}`;
   const tierAttrs: TierAttrs = { className };
   return (
     <div {...tierAttrs}>
@@ -25,4 +25,4 @@ const TierIndicator = ({ rankName, tierMet }: Props) => {
     </div>
   );
 };
-export default TierIndicator;
+export default RankIndicator;
