@@ -19,14 +19,20 @@ interface Props extends ScriptProps {
 
 
 const SingleTalent = ({ data, section, tab, id }: Props) => {
-  // FIXME: this is debug code
-  const [reqsMet] = [true];
 
   const dispatch = useAppDispatch();
   const rankMet = useAppSelector((state=>{
     return selectRankMet(state, {tab, section}, data.rank)
   }))
   const invested = useAppSelector(state=>selectTalent(state, {section, tab, id}));
+
+  let reqsMet = true;
+  if (data.reqs){
+    const reqs = data.reqs.map(id=> useAppSelector(state=> selectTalent(state, {section, tab, id})));
+    reqsMet = reqs.every(val=>val>0);
+  }
+
+  
 
   const maxRank = data.rewards.length;
   const state =
