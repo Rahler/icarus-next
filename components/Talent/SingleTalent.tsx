@@ -7,7 +7,7 @@ import { Talent } from "@/lib/dataParsed";
 import { SingleTalentAttrs } from "./_types";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import RankIndicator from "./RankIndicator";
-import { selectRankMet } from "@/lib/store";
+import { selectRankMet, selectTalent } from "@/lib/store";
 
 interface Props extends ScriptProps {
   data: Talent;
@@ -19,12 +19,13 @@ interface Props extends ScriptProps {
 
 const SingleTalent = ({ data, section, tab, id }: Props) => {
   // FIXME: this is debug code
-  const [reqsMet, invested, rank] = [true, 1, 1];
+  const [reqsMet] = [true];
 
   const dispatch = useAppDispatch();
   const rankMet = useAppSelector((state=>{
     return selectRankMet(state, {tab, section}, data.rank)
   }))
+  const invested = useAppSelector(state=>selectTalent(state, {section, tab, talent:id}));
 
   const maxRank = data.rewards.length;
   const state =
@@ -59,7 +60,7 @@ const SingleTalent = ({ data, section, tab, id }: Props) => {
   return (
     <div {...attrs}>
       <div className={classes["rank-outer"]}>
-        <div className={classes.rank}>{`${rank}/${maxRank}`}</div>
+        <div className={classes.rank}>{`${invested}/${maxRank}`}</div>
       </div>
       <div className={classes.icon}>
         <Image alt={data.caption} src={data.icon} height="64" width="64" />
