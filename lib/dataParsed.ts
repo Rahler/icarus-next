@@ -186,7 +186,7 @@ rawTalents.Rows.forEach(row => {
         });
         return { stats, flags: reward.GrantedFlags };
       }),
-      rank: rank ?? rankOrder[0],
+      rank: rank,
     };
     initialTalentState[section][tab][row.Name] = 0;
   }
