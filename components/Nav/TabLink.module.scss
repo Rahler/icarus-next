@@ -1,0 +1,5 @@
+@use "@/app/vars";
+
+.main {
+    --bs-nav-tabs-link-active-bg: #{vars.$active-hover};
+}
