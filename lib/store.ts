@@ -1,11 +1,13 @@
 import type { Action, ThunkAction } from "@reduxjs/toolkit";
-import { combineSlices, configureStore } from "@reduxjs/toolkit";
+import { combineSlices, configureStore, createSelector } from "@reduxjs/toolkit";
+import talents, { talentSliceName } from "./slices/talents";
 
 // `combineSlices` automatically combines the reducers using
 // their `reducerPath`s, therefore we no longer need to call `combineReducers`.
-const rootReducer = combineSlices(/* a, b, c */);
+const rootReducer = combineSlices({ talents });
 // Infer the `RootState` type from the root reducer
 export type RootState = ReturnType<typeof rootReducer>;
+export const createAppSelector = createSelector.withTypes<RootState>()
 
 // `makeStore` encapsulates the store configuration to allow
 // creating unique store instances, which is particularly important for
@@ -32,3 +34,34 @@ export type AppThunk<ThunkReturnType = void> = ThunkAction<
   unknown,
   Action
 >;
+
+type selectTalentParams = { section: string; tab: string; talent: string };
+export const selectTalent = (
+  state: RootState,
+  { section, tab, talent }: selectTalentParams
+) => state[talentSliceName][section][tab][talent];
+
+type selectTabParams = { section: string; tab: string };
+export const selectTabTotal = createAppSelector(
+  (state: RootState, { section, tab }: selectTabParams) =>
+    state[talentSliceName][section][tab],
+  tab => {
+    Object.values(tab).reduce((prev, curr) => prev + curr, 0);
+  }
+);
+
+export const selectTotal = createAppSelector(
+  (state: RootState) => state[talentSliceName],
+  sectionState => {
+    Object.values(sectionState).reduce(
+      (prev, curr) =>
+        prev +
+        Object.values(curr).reduce(
+          (prev, curr) =>
+            prev + Object.values(curr).reduce((prev, curr) => prev + curr, 0),
+          0
+        ),
+      0
+    );
+  }
+);

@@ -3,10 +3,11 @@ import { ScriptProps } from "next/script";
 
 interface Props extends ScriptProps {
   name: string;
+  text: string;
   active: boolean;
 }
 
-export const SectionLink = ({ name, active }: Props) => {
+export const SectionLink = ({ name, text, active }: Props) => {
   return (
     <li className="nav-item">
       <Link
@@ -16,7 +17,7 @@ export const SectionLink = ({ name, active }: Props) => {
         role="tab"
       >
         {" "}
-        {name}
+        {text}
       </Link>
     </li>
   );

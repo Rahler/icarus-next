@@ -1,14 +1,13 @@
 import { SectionLink } from "./SectionLink";
 import { ScriptProps } from "next/script";
 import Link from "next/link";
-import { Data } from "@/lib/_data";
+import { sections } from "@/lib/dataParsed";
 
 interface Props extends ScriptProps {
-  data: Data;
   activeSection?: string;
 }
 
-export const SectionNav = ({ data, children, activeSection }: Props) => {
+export const SectionNav = ({ children, activeSection }: Props) => {
   return (
     <nav className="navbar navbar-expand-lg">
       <div className="container-fluid">
@@ -31,9 +30,10 @@ export const SectionNav = ({ data, children, activeSection }: Props) => {
           id="navbarSection"
         >
           <ul className="navbar-nav gap-1 nav-tabs" role="tablist">
-            {Object.keys(data).map((section) => (
+            {Object.keys(sections).map((section) => (
               <SectionLink
                 name={section}
+                text={sections[section].caption}
                 key={section}
                 active={activeSection === section}
               />

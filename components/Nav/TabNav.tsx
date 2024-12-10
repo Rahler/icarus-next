@@ -2,7 +2,7 @@ import { TabLink } from "./TabLink";
 import { ScriptProps } from "next/script";
 
 interface Props extends ScriptProps {
-  tabs: string[];
+  tabs: { name: string; text: string }[];
   section: string;
   activeTab?: string;
 }
@@ -14,9 +14,10 @@ export const TabNav = ({ tabs, section, activeTab }: Props) => {
         return (
           <TabLink
             section={encodeURIComponent(section)}
-            name={tab}
-            active={activeTab === tab}
-            key={tab}
+            name={tab.name}
+            active={activeTab === tab.name}
+            key={tab.name}
+            text={tab.text}
           />
         );
       })}
