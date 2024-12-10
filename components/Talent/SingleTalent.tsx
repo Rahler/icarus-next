@@ -5,8 +5,9 @@ import { ScriptProps } from "next/script";
 import Image from "next/image";
 import { Talent } from "@/lib/dataParsed";
 import { SingleTalentAttrs } from "./_types";
-import { useAppDispatch } from "@/lib/hooks";
-import TierIndicator from "./TierIndicator";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+import RankIndicator from "./RankIndicator";
+import { selectRankMet } from "@/lib/store";
 
 interface Props extends ScriptProps {
   data: Talent;
@@ -18,13 +19,16 @@ interface Props extends ScriptProps {
 
 const SingleTalent = ({ data, section, tab, id }: Props) => {
   // FIXME: this is debug code
-  const [reqsMet, tierMet, invested, rank] = [true, true, 1, 1];
+  const [reqsMet, invested, rank] = [true, 1, 1];
 
   const dispatch = useAppDispatch();
+  const rankMet = useAppSelector((state=>{
+    return selectRankMet(state, {tab, section}, data.rank)
+  }))
 
   const maxRank = data.rewards.length;
   const state =
-    reqsMet && tierMet
+    reqsMet && rankMet
       ? invested > 0
         ? "active"
         : "ready"
@@ -60,7 +64,7 @@ const SingleTalent = ({ data, section, tab, id }: Props) => {
       <div className={classes.icon}>
         <Image alt={data.caption} src={data.icon} height="64" width="64" />
       </div>
-      <TierIndicator rankName={data.rank} tierMet={tierMet}/>
+      <RankIndicator rankName={data.rank} rankMet={rankMet}/>
     </div>
   );
 };
