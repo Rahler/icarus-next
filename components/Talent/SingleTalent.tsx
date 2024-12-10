@@ -1,31 +1,13 @@
 "use client";
 
 import classes from "./SingleTalent.module.scss";
-// import {
-//   increment,
-//   decrement,
-//   selectTalentGenerator,
-//   selectReqsMet,
-//   selectTierGenerator,
-// } from "./talentSlice";
-// import { useDispatch, useSelector } from "react-redux";
-// import TalentTooltip from "./TalentTooltip/TalentTooltip";
 import { ScriptProps } from "next/script";
 import Image from "next/image";
-import { Talent, ranks } from "@/lib/dataParsed";
-import { SingleTalentAttrs, TierAttrs } from "./_types";
+import { Talent } from "@/lib/dataParsed";
+import { SingleTalentAttrs } from "./_types";
+import { useAppDispatch } from "@/lib/hooks";
+import TierIndicator from "./TierIndicator";
 
-/**
- * ```
-data = {
-  "name": "Bow Agility",
-  "desc": "Faster movespeed while holding bows",
-  "reqs": [],
-  "tier": 0,
-  "affect": "bow_move_speed",
-  "values": [5, 8, 10]
-}```
-  */
 interface Props extends ScriptProps {
   data: Talent;
   section: string;
@@ -33,39 +15,12 @@ interface Props extends ScriptProps {
   id: string;
 }
 
+
 const SingleTalent = ({ data, section, tab, id }: Props) => {
-  // TODO this is debug code
+  // FIXME: this is debug code
   const [reqsMet, tierMet, invested, rank] = [true, true, 1, 1];
 
-  // Display the tier indicator, if appropriate.
-  // TODO: this should probably get broken out into its own component
-  let tierDiv;
-  if (ranks[data.rank].order > 0) {
-    let className = classes.tier;
-    if (!tierMet) className += ` ${classes.inactive}`;
-    const tierAttrs: TierAttrs = { className };
-    tierDiv = (
-      <div {...tierAttrs}>
-        <Image
-          alt={ranks[data.rank].caption}
-          src={ranks[data.rank].icon}
-          height="21"
-          width="21"
-        />
-      </div>
-    );
-  }
-
-  // const dispatch = useDispatch();
-  // const rank = useSelector(selectTalentGenerator({ section, tab, id }));
-  // const reqsMet = useSelector(
-  //   selectReqsMet({
-  //     section,
-  //     tab,
-  //     ids: reqs,
-  //   })
-  // );
-  // const tierMet = useSelector(selectTierGenerator({ section, tab })) >= tier;
+  const dispatch = useAppDispatch();
 
   const maxRank = data.rewards.length;
   const state =
@@ -102,10 +57,10 @@ const SingleTalent = ({ data, section, tab, id }: Props) => {
       <div className={classes["rank-outer"]}>
         <div className={classes.rank}>{`${rank}/${maxRank}`}</div>
       </div>
-      {tierDiv}
       <div className={classes.icon}>
         <Image alt={data.caption} src={data.icon} height="64" width="64" />
       </div>
+      <TierIndicator rankName={data.rank} tierMet={tierMet}/>
     </div>
   );
 };

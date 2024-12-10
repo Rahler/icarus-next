@@ -1,33 +1,24 @@
 /** @format */
 
-import { sections, initialTalentState } from "../dataParsed";
+import { sections, initialTalentState, ranks } from "../dataParsed";
 import { createSlice } from "@reduxjs/toolkit";
-import { RootState } from "../store";
 
-const name = "talents";
+export const talentSliceName = "talents";
 
 interface TalentState {
-  [section: string]: { [tab: string]: { [name: string]: number } };
+  [name: string]: number;
+}
+interface TabState {
+  [tab: string]: TalentState;
+}
+interface SectionState {
+  [section: string]: TabState;
 }
 
 type TalentIdentifier = { section: string; tab: string; name: string };
 
-type selectSectionParams = { section: string };
-const selectSection = (state: RootState, { section }: selectSectionParams) =>
-  state[name][section];
-
-type selectTabParams = selectSectionParams & { tab: string };
-const selectTab = (state: RootState, { section, tab }: selectTabParams) =>
-  selectSection(state, { section })[tab];
-
-type selectTalentParams = selectTabParams & { talent: string };
-const selectTalent = (
-  state: RootState,
-  { section, tab, talent }: selectTalentParams
-) => selectTab(state, { section, tab })[talent];
-
 const setReducer = (
-  state: TalentState,
+  state: SectionState,
   { payload }: { payload: TalentIdentifier & { newValue: number } }
 ) => {
   const max =
@@ -42,7 +33,7 @@ const resetReducer = () => {
 };
 
 const talentSlice = createSlice({
-  name,
+  name: talentSliceName,
   initialState: initialTalentState,
   reducers: {
     set: setReducer,
