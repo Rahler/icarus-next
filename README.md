@@ -1,29 +1,11 @@
-# Redux Toolkit TypeScript Example
+# Talent Calculator for Icarus
 
-This example shows how to integrate Next.js with [Redux Toolkit](https://redux-toolkit.js.org).
+A talent building tool and effect calculator for [RocketWerkz](https://rocketwerkz.com/)'s Icarus
 
-**Redux Toolkit**(also known as "RTK" for short) provides a standardized way to write Redux logic. It includes utilities that help simplify many common use cases, including [store setup](https://redux-toolkit.js.org/api/configureStore), [creating reducers and writing immutable update logic](https://redux-toolkit.js.org/api/createreducer), and even [creating entire "slices" of state at once](https://redux-toolkit.js.org/api/createslice). This example showcases each of these features in conjunction with Next.js.
+This is intended as a replacement for [therealfaux](http://reddit.com/u/therealfaux)'s [Icarus Talent Tool](https://icarusbuilds.app/), which has not been updated in several years.
 
-## Deploy Your Own
+## Intended Use
 
-Deploy the example using [Vercel](https://vercel.com?utm_source=github&utm_medium=readme&utm_campaign=next-example):
-
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/vercel/next.js/tree/canary/examples/with-redux&project-name=with-redux&repository-name=with-redux)
-
-## How to Use
-
-Execute [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app) with [npm](https://docs.npmjs.com/cli/init), [Yarn](https://yarnpkg.com/lang/en/docs/cli/create/), or [pnpm](https://pnpm.io) to bootstrap the example:
-
-```bash
-npx create-next-app --example with-redux with-redux-app
-```
-
-```bash
-yarn create next-app --example with-redux with-redux-app
-```
-
-```bash
-pnpm create next-app --example with-redux with-redux-app
-```
-
-Deploy it to the cloud with [Vercel](https://vercel.com/new?utm_source=github&utm_medium=readme&utm_campaign=next-example) ([Documentation](https://nextjs.org/docs/deployment)).
+I designed this tool to make theorycrafting and sharing talent builds for Icarus easier.
+* Instead of having to spend gobs of Ren only to discover that you don't have enough points to get all the talents you want, why not be able to see that in a painless way?
+* Instead of nebulous tooltips, why not show the exact effect of your talents?
