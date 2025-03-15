@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ScriptProps } from "next/script";
+import hover from "./TabLink.module.scss"
 
 interface Props extends ScriptProps {
   section: string;
@@ -11,7 +12,7 @@ interface Props extends ScriptProps {
 export const TabLink = ({ section, name, text, active }: Props) => {
   let encodedName = encodeURIComponent(name);
   return (
-    <li className="nav-item">
+    <li className={`nav-item ${hover.main}`}>
       <Link
         className={`nav-link ${active ? " active" : ""}`}
         aria-current={active ? "true" : "false"}
