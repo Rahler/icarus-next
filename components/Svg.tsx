@@ -1,6 +1,7 @@
-import { ReactNode } from "react";
+import { ReactNode, SVGProps } from "react";
 
-interface Props {
+
+interface Props extends SVGProps<SVGSVGElement>{
   readonly children: ReactNode;
 }
 

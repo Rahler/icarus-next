@@ -5,7 +5,7 @@ import { ScriptProps } from "next/script";
 import classes from "./page.module.scss";
 import { TabContainerAttrs, TabContainerStyle } from "./_types";
 import { size } from "@/app/_vars";
-import { ReactNode } from "react";
+import { ReactElement } from "react";
 
 interface Props extends ScriptProps {
   params: Promise<{
@@ -19,12 +19,9 @@ export default async function Page(props: Props) {
   const section = decodeURIComponent(params.section);
   const tab = decodeURIComponent(params.tab);
 
-  if (
-    !(
-      Object.hasOwn(sections, section) ||
-      Object.hasOwn(sections[section].tabs, tab)
-    )
-  )
+  const talentData = sections?.[section].tabs?.[tab].talents
+
+  if (talentData === null)
     return notFound();
 
   let [minX, minY, maxY, maxX] = [Infinity, Infinity, 0, 0];
@@ -33,7 +30,7 @@ export default async function Page(props: Props) {
       [x: number]: [string, Talent];
     };
   } = {};
-  Object.entries(sections[section].tabs[tab].talents).forEach(
+  Object.entries(talentData).forEach(
     /**
      * This loop finds the min and max values of X and Y for this tab
      * The min is used to calculate the padding.
@@ -47,7 +44,7 @@ export default async function Page(props: Props) {
       talentsInDrawOrder[talent.pos.y][talent.pos.x] = [id, talent];
     }
   );
-  const talents: ReactNode[] = [];
+  const talents: ReactElement<typeof SingleTalent>[] = [];
   /** Object.values/entries/keys are defined by W3C as iterating in numeric
    *  order for Number keys, so looping in this way gives them in the order they
    *  will display on the screen. Good for both accessability and performance.
@@ -65,10 +62,12 @@ export default async function Page(props: Props) {
       );
     })
   );
+  const height = minY + maxY;
+  const width = minX + maxX;
   const style: TabContainerStyle = {
-    height: `${minY + size + maxY}px`,
-    width: `${minX + size + maxX}px`,
-    padding: `${minY}px ${minX}px`,
+    "--height": height,
+    "--width": width,
+    "--size": size,
     backgroundImage: `url(${sections[section].tabs[tab].background})`,
   };
   const attrs: TabContainerAttrs = { className: classes.main, style };

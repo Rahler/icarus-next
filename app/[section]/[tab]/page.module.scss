@@ -3,4 +3,8 @@
 .main {
   position: relative;
   margin: 0 auto;
+  min-height: calc((vars.$talent-pos-scale * var(--height)) + (var(--size) * 1px));
+  height: 100%;
+  width: calc((vars.$talent-pos-scale * var(--width)) + (var(--size) * 1px));
+  padding: calc(var(--size) * 0.5px);
 }

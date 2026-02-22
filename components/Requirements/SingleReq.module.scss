@@ -1,0 +1,6 @@
+.main{
+  stroke: hotpink; /* Debug value - this should always be overridden by a state class (ready, active, ...) */
+  stroke-width: 7px;
+  position:absolute;
+  pointer-events: none;
+}

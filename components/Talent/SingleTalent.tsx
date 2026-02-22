@@ -9,6 +9,8 @@ import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import RankIndicator from "./RankIndicator";
 import { selectRankMet, selectTalent } from "@/lib/store";
 import { set } from "@/lib/slices/talents";
+import SingleReq from "../Requirements/SingleReq";
+import { ReactElement } from "react";
 
 interface Props extends ScriptProps {
   data: Talent;
@@ -28,7 +30,11 @@ const SingleTalent = ({ data, section, tab, id }: Props) => {
 
   let reqsMet = true;
   if (data.reqs){
-    const reqs = data.reqs.map(id=> useAppSelector(state=> selectTalent(state, {section, tab, id})));
+    const reqs = data.reqs.map(
+      ({sourceId})=> useAppSelector(
+        state=> selectTalent(state, {section, tab, id: sourceId})
+      )
+    )
     reqsMet = reqs.every(val=>val>0);
   }
 
@@ -57,15 +63,24 @@ const SingleTalent = ({ data, section, tab, id }: Props) => {
       dispatch(set({section, tab, id, newValue:invested-1 }));
       e.preventDefault();
     },
-    style: {
-      left: `${data.pos.x}px`,
-      top: `${data.pos.y}px`,
-    },
+    style:{
+      "--pos-x": data.pos.x,
+      "--pos-y": data.pos.y,
+      },
     className: classArray.join(" "),
   };
 
+  const reqElements: ReactElement<typeof SingleReq>[] = [];
+  data.reqs?.forEach(({sourceId, sourceCoord}) => {
+    reqElements.push(<SingleReq data={{
+      start: {id:sourceId, pos: sourceCoord},
+      end: {id, pos: data.pos}}
+    }/>)
+  });
+
   return (
-    <div {...attrs}>
+    <div key={id} {...attrs}>
+      {reqElements}
       <div className={classes["rank-outer"]}>
         <div className={classes.rank}>{`${invested}/${maxRank}`}</div>
       </div>

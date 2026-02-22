@@ -3,8 +3,11 @@
 .main {
   color: var(--text-color);
   position: absolute;
+  z-index: 50;
   height: vars.$size;
   width: vars.$size;
+  left: calc(vars.$talent-pos-scale * var(--pos-x));
+  top: calc(vars.$talent-pos-scale * var(--pos-y));
   user-select: none;
   &:hover {
     --bg-color: var(--hover-color);

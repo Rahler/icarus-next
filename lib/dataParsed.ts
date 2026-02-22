@@ -12,6 +12,11 @@ import {
   minedGrantedStatName,
 } from "./MinedData/statName";
 
+export interface Vector {
+  x: number;
+  y: number;
+}
+
 export interface Section {
   /** Human-readable name */
   caption: string;
@@ -47,18 +52,26 @@ export type TalentReward = {
   flags: string[];
 };
 
+/** This represents an individual requirement entry */
+export type TalentReq ={
+  /** This is the  */
+  sourceId: string,
+  sourceCoord: Vector,
+};
+
 /** This represents individual talents (currently only player talents)
  */
 export interface Talent {
   caption: string;
   description: string;
   icon: localPngPath;
-  pos: { x: number; y: number };
+  pos: Vector;
   rewards: TalentReward[];
-  reqs?: string[];
+  reqs?: TalentReq[];
   /** Needs to match a key in {@link ranks} */
   rank: string;
 }
+
 
 export interface Rank {
   caption: string;
@@ -71,11 +84,28 @@ export interface StatNames {
   [name: string]: { positiveName: string; negativeName: string };
 }
 
+type talentFullId = {
+  section: string,
+  tab: string,
+  id: string,
+}
+
+/** This is a list of all the requirements, to be looped through after the main
+ * import loop for adding the reqs to each talent once I can count on both ends
+ * of the line existing. */
+type rawReq = {
+  /** The talent that this req unlocks */
+  target:talentFullId,
+  /** The talent that this req requires */
+  source:talentFullId
+}
+
 export const sections: Sections = {};
 export const ranks: { [name: string]: Rank } = {};
 export const rankOrder: string[] = [];
 export const statNames: StatNames = {};
 export const initialTalentState: TalentState = {};
+const rawReqs: rawReq[] = [];
 /** This reverse lookup hash is because I want to store the tree top-down,
  * but the data is bottom-up.
  */
@@ -85,11 +115,13 @@ const TabToSectionHash: { [tab: string]: string } = {};
 /********************* Data function definitions ********************/
 /********************************************************************/
 
-/** This will need to be updated if we ever start importing anything other than player talents */
+/** This will need to be updated if we ever start importing anything other than
+ * player talents */
 function isPlayerTreeRow(test: Mined.TreeRow): test is Mined.PlayerTreeRow {
   return Object.hasOwn(sections, test.Archetype.RowName);
 }
-/** This will need to be updated if we ever start importing anything other than player talents */
+/** This will need to be updated if we ever start importing anything other than
+ * player talents */
 function isPlayerTalent(
   test: Mined.TalentFileRow
 ): test is Mined.PlayerTalentRow {
@@ -98,12 +130,13 @@ function isPlayerTalent(
   );
 }
 
-// /** This will need to be updated if we ever start importing anything other than player talents */
-// function isPlayerReroute(test: Mined.TalentFileRow): test is Mined.Reroute {
-//   return (
-//     Object.hasOwn(TabToSectionHash, test.TalentTree.RowName) && test.bIsReroute
-//   );
-// }
+/** This will need to be updated if we ever start importing anything other
+than player talents */
+function isPlayerReroute(test: Mined.TalentFileRow): test is Mined.Reroute {
+  return (
+    Object.hasOwn(TabToSectionHash, test.TalentTree.RowName) && test.bIsReroute
+  );
+}
 
 // Importing the rank info (icon, required point investment, name)
 rawRanks.Rows.forEach(row => {
@@ -153,9 +186,17 @@ rawTrees.Rows.forEach(row => {
   }
 }); // END Trees import into tabs
 
+/** Lookups for player reroutes, so that we can trace back to their origins */
+const playerReroutes:{[name:string]:string[]} = {};
 /** Import the talent definitions themselves. If we ever start caring about
  * non-player archetypes, this function will need to be updated. */
 rawTalents.Rows.forEach(row => {
+  if (isPlayerReroute(row)) {
+    playerReroutes[row.Name] ||= [];
+      row.RequiredTalents?.forEach(req=>{
+        playerReroutes[row.Name].push(req.RowName)}
+      )
+  }
   if (isPlayerTalent(row)) {
     const tab = row.TalentTree.RowName;
     const section = TabToSectionHash[tab];
@@ -187,8 +228,35 @@ rawTalents.Rows.forEach(row => {
         return { stats, flags: reward.GrantedFlags };
       }),
       rank: rank,
-      reqs: row.RequiredTalents?.map(req => req.RowName),
     };
+    if (row.RequiredTalents){
+      row.RequiredTalents.forEach(req=>{
+        if (req.RowName)
+        rawReqs.push({
+          source: {id: req.RowName, section, tab},
+          target: {id: row.Name, section, tab}
+        })
+      })
+    }
     initialTalentState[section][tab][row.Name] = 0;
   }
 });
+
+/** Loop over all the requirements we found and stick them back into their
+ * targets now that we can be sure to have the source coord info */
+rawReqs.forEach(({source:{id:sourceId}, target})=>{
+  const talents = sections[target.section].tabs[target.tab].talents;
+  talents[target.id].reqs ??= [];
+  if (Object.hasOwn(playerReroutes, sourceId)){
+    playerReroutes[sourceId].forEach(chainedId=>
+      talents[target.id].reqs?.push({
+        sourceId: chainedId,
+        sourceCoord: talents[chainedId].pos,
+      })
+    );
+  }
+  else talents[target.id].reqs?.push({
+    sourceId,
+    sourceCoord: talents[sourceId].pos,
+  })
+})
